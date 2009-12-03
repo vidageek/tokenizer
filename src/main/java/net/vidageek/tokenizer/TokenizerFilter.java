@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.vidageek.tokenizer.protocol.MustHaveSecurityTokenProtocol;
 import net.vidageek.tokenizer.protocol.Protocol;
+import net.vidageek.tokenizer.protocol.TokenMustBeOnSessionProtocol;
 
 import org.apache.log4j.Logger;
 
@@ -36,6 +37,7 @@ final public class TokenizerFilter implements Filter {
         for (Protocol protocol : protocols(request)) {
             if (protocol.wasViolated()) {
                 rejectRequest(response, protocol.rejectionCause());
+                break;
             }
         }
     }
@@ -48,6 +50,7 @@ final public class TokenizerFilter implements Filter {
     private List<Protocol> protocols(final HttpServletRequest request) {
         final ArrayList<Protocol> protocols = new ArrayList<Protocol>();
         protocols.add(new MustHaveSecurityTokenProtocol(request, "security-token"));
+        protocols.add(new TokenMustBeOnSessionProtocol(request.getSession(), "net.vidageek.tokenizer.token.name"));
         return protocols;
     }
 
