@@ -16,11 +16,15 @@ import javax.servlet.http.HttpServletResponse;
 import net.vidageek.tokenizer.protocol.MustHaveSecurityTokenProtocol;
 import net.vidageek.tokenizer.protocol.Protocol;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author jonasabreu
  * 
  */
 final public class TokenizerFilter implements Filter {
+
+    private final Logger log = Logger.getLogger(TokenizerFilter.class);
 
     public void destroy() {
     }
@@ -31,13 +35,14 @@ final public class TokenizerFilter implements Filter {
 
         for (Protocol protocol : protocols(request)) {
             if (protocol.wasViolated()) {
-                rejectRequest(response);
+                rejectRequest(response, protocol.rejectionCause());
             }
         }
     }
 
-    private void rejectRequest(final ServletResponse response) throws IOException {
+    private void rejectRequest(final ServletResponse response, final String rejectionCause) throws IOException {
         ((HttpServletResponse) response).sendError(403, "Invalid security token.");
+        log.info("Rejected request. Cause: " + rejectionCause);
     }
 
     private List<Protocol> protocols(final HttpServletRequest request) {

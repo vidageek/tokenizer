@@ -20,4 +20,8 @@ final public class MustHaveSecurityTokenProtocol implements Protocol {
         return request.getParameter(securityTokenName) == null;
     }
 
+    public String rejectionCause() {
+        return null;
+    }
+
 }
