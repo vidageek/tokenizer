@@ -21,7 +21,7 @@ final public class MustHaveSecurityTokenProtocol implements Protocol {
     }
 
     public String rejectionCause() {
-        return null;
+        return "Security token [" + securityTokenName + "] is not present.";
     }
 
 }

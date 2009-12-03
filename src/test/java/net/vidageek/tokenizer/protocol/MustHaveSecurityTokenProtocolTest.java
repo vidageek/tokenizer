@@ -30,4 +30,10 @@ final public class MustHaveSecurityTokenProtocolTest {
 
         Assert.assertFalse(new MustHaveSecurityTokenProtocol(request, "token").wasViolated());
     }
+
+    @Test
+    public void testRejectionCause() {
+        Assert.assertEquals("Security token [security-token] is not present.", new MustHaveSecurityTokenProtocol(null,
+                "security-token").rejectionCause());
+    }
 }
